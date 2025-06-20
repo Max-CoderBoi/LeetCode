@@ -4,7 +4,12 @@ const User = require("../models/user");
 const Submission = require("../models/submission");
 
 const createProblem = async (req,res)=>{
+<<<<<<< HEAD
 
+=======
+   
+  // API request to authenticate user:
+>>>>>>> c4dbd06 (creation of chatbot)
     const {title,description,difficulty,tags,
         visibleTestCases,hiddenTestCases,startCode,
         referenceSolution, problemCreator
@@ -223,7 +228,11 @@ const submittedProblem = async(req,res)=>{
     const userId = req.result._id;
     const problemId = req.params.pid;
 
+<<<<<<< HEAD
   const ans = await Submission.find({userId,problemId});
+=======
+   const ans = await Submission.find({userId,problemId});
+>>>>>>> c4dbd06 (creation of chatbot)
   
   if(ans.length==0)
     res.status(200).send("No Submission is persent");

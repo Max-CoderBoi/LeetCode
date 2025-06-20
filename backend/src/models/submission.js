@@ -42,7 +42,11 @@ const submissionSchema = new Schema({
     type: Number,
     default: 0
   },
+<<<<<<< HEAD
   testCasesTotal: {  // Recommended addition
+=======
+  testCasesTotal: {  
+>>>>>>> c4dbd06 (creation of chatbot)
     type: Number,
     default: 0
   }
