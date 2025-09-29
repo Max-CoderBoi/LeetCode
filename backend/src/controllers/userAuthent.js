@@ -10,10 +10,7 @@ const register = async (req,res)=>{
     
     try{
         // validate the data;
-<<<<<<< HEAD
-=======
 
->>>>>>> c4dbd06 (creation of chatbot)
       validate(req.body); 
       const {firstName, emailId, password}  = req.body;
 
