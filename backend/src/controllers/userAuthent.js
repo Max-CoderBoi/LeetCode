@@ -26,10 +26,7 @@ const register = async (req,res)=>{
         _id: user._id,
         role:user.role,
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> c4dbd06 (creation of chatbot)
+
      res.cookie('token',token,{maxAge: 60*60*1000});
      res.status(201).json({
         user:reply,
