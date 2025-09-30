@@ -4,12 +4,9 @@ const User = require("../models/user");
 const Submission = require("../models/submission");
 
 const createProblem = async (req,res)=>{
-<<<<<<< HEAD
-
-=======
-   
+  
   // API request to authenticate user:
->>>>>>> c4dbd06 (creation of chatbot)
+
     const {title,description,difficulty,tags,
         visibleTestCases,hiddenTestCases,startCode,
         referenceSolution, problemCreator
@@ -183,6 +180,7 @@ const getProblemById = async(req,res)=>{
     res.status(500).send("Error: "+err);
   }
 }
+
 
 const getAllProblem = async(req,res)=>{
 
