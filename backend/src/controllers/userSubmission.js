@@ -5,9 +5,8 @@ const {getLanguageById,submitBatch,submitToken} = require("../utils/problemUtili
 
 const submitCode = async (req,res)=>{
    
-    // 
     try{
-<<<<<<< HEAD
+
        const userId = req.result._id;
        const problemId = req.params.id;
 
@@ -20,7 +19,7 @@ const submitCode = async (req,res)=>{
        const problem =  await Problem.findById(problemId);
     //    testcases(Hidden)
 
-=======
+
       
        const userId = req.result._id;
        const problemId = req.params.id;
@@ -40,7 +39,7 @@ const submitCode = async (req,res)=>{
        const problem =  await Problem.findById(problemId);
     //    testcases(Hidden)
     
->>>>>>> c4dbd06 (creation of chatbot)
+
     //   Kya apne submission store kar du pehle....
     const submittedResult = await Submission.create({
           userId,
@@ -49,21 +48,21 @@ const submitCode = async (req,res)=>{
           language,
           status:'pending',
           testCasesTotal:problem.hiddenTestCases.length
-<<<<<<< HEAD
+
         })
 
     //    Judge0 code ko submit karna hai
 
     const languageId = getLanguageById(language);
 
-=======
+
      })
 
     //    Judge0 code ko submit karna hai
     
     const languageId = getLanguageById(language);
    
->>>>>>> c4dbd06 (creation of chatbot)
+
     const submissions = problem.hiddenTestCases.map((testcase)=>({
         source_code:code,
         language_id: languageId,
@@ -71,11 +70,8 @@ const submitCode = async (req,res)=>{
         expected_output: testcase.output
     }));
 
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> c4dbd06 (creation of chatbot)
+
     const submitResult = await submitBatch(submissions);
     
     const resultToken = submitResult.map((value)=> value.token);
@@ -126,10 +122,10 @@ const submitCode = async (req,res)=>{
       req.result.problemSolved.push(problemId);
       await req.result.save();
     }
-<<<<<<< HEAD
+
 
     res.status(201).send(submittedResult);
-=======
+
     
     const accepted = (status == 'accepted')
     res.status(201).json({
@@ -139,16 +135,16 @@ const submitCode = async (req,res)=>{
       runtime,
       memory
     });
->>>>>>> c4dbd06 (creation of chatbot)
+
        
     }
     catch(err){
       res.status(500).send("Internal Server Error "+ err);
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> c4dbd06 (creation of chatbot)
+
+
+
 }
 
 
@@ -159,11 +155,11 @@ const runCode = async(req,res)=>{
       const userId = req.result._id;
       const problemId = req.params.id;
 
-<<<<<<< HEAD
+
       const {code,language} = req.body;
-=======
+
       let {code,language} = req.body;
->>>>>>> c4dbd06 (creation of chatbot)
+
 
      if(!userId||!code||!problemId||!language)
        return res.status(400).send("Some field missing");
@@ -171,12 +167,12 @@ const runCode = async(req,res)=>{
    //    Fetch the problem from database
       const problem =  await Problem.findById(problemId);
    //    testcases(Hidden)
-<<<<<<< HEAD
 
-=======
+
+
       if(language==='cpp')
         language='c++'
->>>>>>> c4dbd06 (creation of chatbot)
+
 
    //    Judge0 code ko submit karna hai
 
@@ -196,11 +192,11 @@ const runCode = async(req,res)=>{
 
    const testResult = await submitToken(resultToken);
 
-<<<<<<< HEAD
+
    
   
    res.status(201).send(testResult);
-=======
+
     let testCasesPassed = 0;
     let runtime = 0;
     let memory = 0;
@@ -232,7 +228,7 @@ const runCode = async(req,res)=>{
     runtime,
     memory
    });
->>>>>>> c4dbd06 (creation of chatbot)
+
       
    }
    catch(err){
