@@ -7,17 +7,7 @@ const submitCode = async (req,res)=>{
    
     try{
 
-       const userId = req.result._id;
-       const problemId = req.params.id;
 
-       const {code,language} = req.body;
-
-      if(!userId||!code||!problemId||!language)
-        return res.status(400).send("Some field missing");
-
-    //    Fetch the problem from database
-       const problem =  await Problem.findById(problemId);
-    //    testcases(Hidden)
 
 
       
