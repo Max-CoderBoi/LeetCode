@@ -5,11 +5,7 @@ const redisClient = require("../config/redis")
 const userMiddleware = async (req,res,next)=>{
 
     try{
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> c4dbd06 (creation of chatbot)
         const {token} = req.cookies;
         if(!token)
             throw new Error("Token is not persent");
