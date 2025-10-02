@@ -6,12 +6,7 @@ const {getLanguageById,submitBatch,submitToken} = require("../utils/problemUtili
 const submitCode = async (req,res)=>{
    
     try{
-
-
-
-
-      
-       const userId = req.result._id;
+        const userId = req.result._id;
        const problemId = req.params.id;
 
        let {code,language} = req.body;
