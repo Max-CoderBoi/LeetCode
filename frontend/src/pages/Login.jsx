@@ -33,14 +33,14 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       <div className="w-full max-w-md">
-        {/* Card with enhanced styling */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:shadow-3xl">
+        {/* Card with dark theme */}
+        <div className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:shadow-purple-500/20 hover:shadow-3xl border border-gray-700">
           <div className="p-8 sm:p-10">
             {/* Logo/Brand Section */}
             <div className="flex justify-center mb-8">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-full p-4 shadow-lg">
+              <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-full p-4 shadow-lg shadow-purple-500/50">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
@@ -48,21 +48,21 @@ function Login() {
             </div>
 
             {/* Title */}
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-center text-white mb-2">
               Welcome Back
             </h2>
-            <p className="text-center text-gray-600 mb-8">
+            <p className="text-center text-gray-400 mb-8">
               Sign in to continue your coding journey
             </p>
 
             {/* Error Alert */}
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r animate-fade-in">
+              <div className="bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 rounded-r animate-fade-in">
                 <div className="flex items-center">
-                  <svg className="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
-                  <p className="text-sm text-red-700">{error}</p>
+                  <p className="text-sm text-red-300">{error}</p>
                 </div>
               </div>
             )}
@@ -72,25 +72,25 @@ function Login() {
               {/* Email Field */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-medium text-gray-700">Email Address</span>
+                  <span className="label-text font-medium text-gray-300">Email Address</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                     </svg>
                   </div>
                   <input
                     type="email"
                     placeholder="john@example.com"
-                    className={`input input-bordered w-full pl-10 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                      errors.emailId ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
+                    className={`input w-full pl-10 bg-gray-700 border-gray-600 text-white placeholder-gray-500 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-gray-600 ${
+                      errors.emailId ? 'border-red-500 focus:ring-red-500' : ''
                     }`}
                     {...register('emailId')}
                   />
                 </div>
                 {errors.emailId && (
-                  <span className="text-red-600 text-sm mt-1 flex items-center animate-fade-in">
+                  <span className="text-red-400 text-sm mt-1 flex items-center animate-fade-in">
                     <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -102,19 +102,19 @@ function Login() {
               {/* Password Field */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-medium text-gray-700">Password</span>
+                  <span className="label-text font-medium text-gray-300">Password</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className={`input input-bordered w-full pl-10 pr-12 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                      errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
+                    className={`input w-full pl-10 pr-12 bg-gray-700 border-gray-600 text-white placeholder-gray-500 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-gray-600 ${
+                      errors.password ? 'border-red-500 focus:ring-red-500' : ''
                     }`}
                     {...register('password')}
                     onKeyDown={(e) => {
@@ -125,7 +125,7 @@ function Login() {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
@@ -142,7 +142,7 @@ function Login() {
                   </button>
                 </div>
                 {errors.password && (
-                  <span className="text-red-600 text-sm mt-1 flex items-center animate-fade-in">
+                  <span className="text-red-400 text-sm mt-1 flex items-center animate-fade-in">
                     <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -153,7 +153,7 @@ function Login() {
 
               {/* Forgot Password Link */}
               <div className="flex justify-end">
-                <NavLink to="/forgot-password" className="text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors duration-200">
+                <NavLink to="/forgot-password" className="text-sm text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200">
                   Forgot password?
                 </NavLink>
               </div>
@@ -161,7 +161,7 @@ function Login() {
               {/* Submit Button */}
               <button
                 onClick={handleSubmit(onSubmit)}
-                className="btn w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                className="btn w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-none shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 transform hover:-translate-y-0.5"
                 disabled={loading}
               >
                 {loading ? (
@@ -181,13 +181,13 @@ function Login() {
             </div>
 
             {/* Divider */}
-            <div className="divider my-8 text-gray-400">OR</div>
+            <div className="divider my-8 text-gray-600">OR</div>
 
             {/* Sign Up Link */}
             <div className="text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-400">
                 Don't have an account?{' '}
-                <NavLink to="/signup" className="font-semibold text-purple-600 hover:text-purple-700 transition-colors duration-200">
+                <NavLink to="/signup" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors duration-200">
                   Create one now
                 </NavLink>
               </p>
