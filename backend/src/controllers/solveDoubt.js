@@ -1,20 +1,54 @@
-const { GoogleGenAI } = require("@google/genai");
+// src/controllers/solveDoubt.js
 
+const Groq = require("groq-sdk");
 
-const solveDoubt = async(req , res)=>{
+const solveDoubt = async(req, res) => {
+    try {
+        const {messages, title, description, testCases, startCode} = req.body;
+        
+        // Validate required fields
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({
+                message: "Messages array is required"
+            });
+        }
 
+        // Initialize Groq client
+        const groq = new Groq({
+            apiKey: process.env.GROQ_API_KEY
+        });
 
-    try{
+        // Validate and normalize messages
+        const normalizedMessages = messages.map((msg, index) => {
+            // Ensure each message has role and content
+            if (!msg.role || !msg.content) {
+                throw new Error(`Message at index ${index} missing role or content`);
+            }
 
-        const {messages,title,description,testCases,startCode} = req.body;
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_KEY });
-       
-        async function main() {
-        const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: messages,
-        config: {
-        systemInstruction: `
+            // Normalize role values
+            let role = msg.role.toLowerCase();
+            
+            // Handle different role formats
+            if (role === 'model' || role === 'bot' || role === 'ai') {
+                role = 'assistant';
+            }
+            
+            // Validate role is one of the accepted values
+            if (!['user', 'assistant', 'system'].includes(role)) {
+                throw new Error(`Invalid role "${msg.role}" at index ${index}. Must be "user", "assistant", or "system"`);
+            }
+
+            return {
+                role: role,
+                content: msg.content
+            };
+        });
+
+        // Format messages with system instruction
+        const formattedMessages = [
+            {
+                role: "system",
+                content: `
 You are an expert Data Structures and Algorithms (DSA) tutor specializing in helping users solve coding problems. Your role is strictly limited to DSA-related assistance only.
 
 ## CURRENT PROBLEM CONTEXT:
@@ -22,7 +56,6 @@ You are an expert Data Structures and Algorithms (DSA) tutor specializing in hel
 [PROBLEM_DESCRIPTION]: ${description}
 [EXAMPLES]: ${testCases}
 [startCode]: ${startCode}
-
 
 ## YOUR CAPABILITIES:
 1. **Hint Provider**: Give step-by-step hints without revealing the complete solution
@@ -81,21 +114,58 @@ You are an expert Data Structures and Algorithms (DSA) tutor specializing in hel
 - Promote best coding practices
 
 Remember: Your goal is to help users learn and understand DSA concepts through the lens of the current problem, not just to provide quick answers.
-`},
-    });
-     
-    res.status(201).json({
-        message:response.text
-    });
-    console.log(response.text);
-    }
+`
+            },
+            ...normalizedMessages // Use normalized messages
+        ];
 
-    main();
-      
-    }
-    catch(err){
+        console.log('Sending messages to Groq:', JSON.stringify(formattedMessages, null, 2));
+
+        // Call Groq API
+        const response = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: formattedMessages,
+            temperature: 0.7,
+            max_tokens: 2048,
+            top_p: 1,
+            stream: false
+        });
+
+        // Extract assistant's response
+        const assistantMessage = response.choices[0].message.content;
+
+        res.status(201).json({
+            message: assistantMessage
+        });
+        
+        console.log("Response sent successfully");
+        
+    } catch(err) {
+        console.error('Groq API Error:', err);
+        
+        // Handle specific error types
+        if (err.status === 429) {
+            return res.status(429).json({
+                message: "Rate limit exceeded. Please try again in a moment."
+            });
+        }
+        
+        if (err.status === 401) {
+            return res.status(500).json({
+                message: "API authentication failed. Please check your API key."
+            });
+        }
+
+        if (err.status === 400) {
+            return res.status(400).json({
+                message: "Invalid request format",
+                error: err.message
+            });
+        }
+        
         res.status(500).json({
-            message: "Internal server error"
+            message: "Internal server error",
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined
         });
     }
 }

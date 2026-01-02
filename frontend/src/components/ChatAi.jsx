@@ -4,12 +4,12 @@ import axiosClient from "../utils/axiosClient";
 import { Send } from 'lucide-react';
 
 function ChatAi({problem}) {
+    
     const [messages, setMessages] = useState([
-        { role: 'model', parts:[{text: "Hi, How are you"}]},
-        { role: 'user', parts:[{text: "I am Good"}]}
+        { role: 'assistant', content: "Hi! I'm your DSA tutor. How can I help you with this problem?" }
     ]);
 
-    const { register, handleSubmit, reset,formState: {errors} } = useForm();
+    const { register, handleSubmit, reset, formState: {errors} } = useForm();
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
@@ -17,30 +17,31 @@ function ChatAi({problem}) {
     }, [messages]);
 
     const onSubmit = async (data) => {
-        
-        setMessages(prev => [...prev, { role: 'user', parts:[{text: data.message}] }]);
+       
+        const userMessage = { role: 'user', content: data.message };
+        setMessages(prev => [...prev, userMessage]);
         reset();
 
         try {
             
             const response = await axiosClient.post("/ai/chat", {
-                messages:messages,
-                title:problem.title,
-                description:problem.description,
+                messages: [...messages, userMessage], // Include the new user message
+                title: problem.title,
+                description: problem.description,
                 testCases: problem.visibleTestCases,
-                startCode:problem.startCode
+                startCode: problem.startCode
             });
 
-           
+            
             setMessages(prev => [...prev, { 
-                role: 'model', 
-                parts:[{text: response.data.message}] 
+                role: 'assistant', 
+                content: response.data.message
             }]);
         } catch (error) {
             console.error("API Error:", error);
             setMessages(prev => [...prev, { 
-                role: 'model', 
-                parts:[{text: "Error from AI Chatbot"}]
+                role: 'assistant', 
+                content: "Sorry, I encountered an error. Please try again."
             }]);
         }
     };
@@ -53,8 +54,15 @@ function ChatAi({problem}) {
                         key={index} 
                         className={`chat ${msg.role === "user" ? "chat-end" : "chat-start"}`}
                     >
-                        <div className="chat-bubble bg-base-200 text-base-content">
-                            {msg.parts[0].text}
+                        <div className={`chat-bubble ${
+                            msg.role === "user" 
+                                ? "bg-primary text-primary-content" 
+                                : "bg-base-200 text-base-content"
+                        }`}>
+                        
+                            <div className="whitespace-pre-wrap">
+                                {msg.content}
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -64,20 +72,26 @@ function ChatAi({problem}) {
                 onSubmit={handleSubmit(onSubmit)} 
                 className="sticky bottom-0 p-4 bg-base-100 border-t"
             >
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                     <input 
-                        placeholder="Ask me anything" 
+                        placeholder="Ask me anything about this problem..." 
                         className="input input-bordered flex-1" 
-                        {...register("message", { required: true, minLength: 2 })}
+                        {...register("message", { 
+                            required: "Message is required", 
+                            minLength: { value: 2, message: "Too short" }
+                        })}
                     />
                     <button 
                         type="submit" 
-                        className="btn btn-ghost ml-2"
-                        disabled={errors.message}
+                        className="btn btn-primary"
+                        disabled={!!errors.message}
                     >
                         <Send size={20} />
                     </button>
                 </div>
+                {errors.message && (
+                    <p className="text-error text-sm mt-1">{errors.message.message}</p>
+                )}
             </form>
         </div>
     );
