@@ -66,41 +66,53 @@ function Homepage() {
     <div className="min-h-screen bg-gradient-to-br from-base-200 to-base-300">
       {/* Enhanced Navigation Bar */}
       <nav className="navbar bg-base-100 shadow-xl px-6 sticky top-0 z-50 backdrop-blur-lg bg-opacity-90">
-        <div className="flex-1">
-          <NavLink to="/" className="btn btn-ghost text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            CodeArena
+        <div className="flex-1 min-w-0">
+          <NavLink to="/" className="btn btn-ghost text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            LeetCode
           </NavLink>
         </div>
-        <div className="flex-none gap-4">
-          <div className="form-control hidden md:block">
-            <div className="input-group">
+        
+        <div className="flex-none mx-4 hidden md:flex">
+          <div className="form-control w-96">
+            <div className="flex">
               <input 
                 type="text" 
                 placeholder="Search problems..." 
-                className="input input-bordered w-64"
+                className="input input-bordered flex-1 rounded-r-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button className="btn btn-square btn-primary">
+              <button className="btn btn-square btn-primary rounded-l-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
             </div>
           </div>
+        </div>
+
+        <div className="flex-1 min-w-0 flex justify-end">
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} className="btn btn-ghost gap-2">
-              <div className="avatar placeholder">
-                <div className="bg-primary text-primary-content rounded-full w-10">
-                  <span className="text-lg">{user?.firstName?.charAt(0)}</span>
-                </div>
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
+                <span className="text-lg font-semibold">{user?.firstName?.charAt(0)}</span>
               </div>
-              <span className="hidden md:inline">{user?.firstName}</span>
             </div>
             <ul className="mt-3 p-2 shadow-xl menu menu-sm dropdown-content bg-base-100 rounded-box w-52 border border-base-300">
-              <li className="menu-title">
-                <span>Account</span>
+              <li className="menu-title px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="avatar">
+                    <div className="w-8 rounded-full bg-primary text-primary-content flex items-center justify-center">
+                      <span className="text-sm font-semibold">{user?.firstName?.charAt(0)}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">{user?.firstName}</div>
+                    <div className="text-xs opacity-60">{user?.email}</div>
+                  </div>
+                </div>
               </li>
+              <div className="divider my-0"></div>
               <li><button onClick={handleLogout}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
