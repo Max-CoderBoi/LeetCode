@@ -83,21 +83,8 @@ function Admin() {
             Manage coding problems, video tutorials, and platform content with powerful admin tools
           </p>
           
-          {/* Stats bar */}
-          <div className="flex justify-center gap-6 mt-8">
-            <div className="px-4 py-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg">
-              <div className="text-xs text-slate-400">Total Problems</div>
-              <div className="text-xl font-bold text-white">127</div>
-            </div>
-            <div className="px-4 py-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg">
-              <div className="text-xs text-slate-400">Active Users</div>
-              <div className="text-xl font-bold text-white">1.2K</div>
-            </div>
-            <div className="px-4 py-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg">
-              <div className="text-xs text-slate-400">Videos</div>
-              <div className="text-xl font-bold text-white">43</div>
-            </div>
-          </div>
+        
+         
         </div>
 
         {/* Admin Options Grid */}
