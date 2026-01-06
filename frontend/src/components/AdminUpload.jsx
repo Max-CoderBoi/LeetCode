@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import axiosClient from '../utils/axiosClient';
-import { Upload, CheckCircle, AlertCircle, Film, Clock, Calendar, FileVideo } from 'lucide-react';
+import { Upload, CheckCircle, AlertCircle, Film, Clock, Calendar, FileVideo, Sparkles } from 'lucide-react';
 
 function AdminUpload() {
   const { problemId } = useParams();
@@ -77,32 +77,38 @@ function AdminUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800/50 shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-                <Film className="w-8 h-8 text-white" />
+          <div className="relative px-8 py-6 border-b border-slate-800/50">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 opacity-10 blur"></div>
+            <div className="relative flex items-center gap-3">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                  <Film className="w-6 h-6 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                  <Sparkles className="w-2.5 h-2.5 text-white" />
+                </div>
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">Upload Video Solution</h1>
-                <p className="text-blue-100 mt-1">Problem ID: {problemId}</p>
+                <p className="text-slate-400 mt-1">Problem ID: <span className="text-purple-400 font-medium">{problemId}</span></p>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+          <div className="p-8 space-y-6">
             {/* File Upload Area */}
             <div className="space-y-4">
               <label className="block">
                 <div className={`relative border-2 border-dashed rounded-xl transition-all duration-200 ${
                   errors.videoFile 
-                    ? 'border-red-300 bg-red-50' 
+                    ? 'border-rose-500/50 bg-rose-500/5' 
                     : selectedFile 
-                    ? 'border-green-300 bg-green-50' 
-                    : 'border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50'
+                    ? 'border-purple-500/50 bg-purple-500/5' 
+                    : 'border-slate-700/50 bg-slate-800/30 hover:border-purple-500/50 hover:bg-slate-800/50'
                 }`}>
                   <input
                     type="file"
@@ -128,16 +134,19 @@ function AdminUpload() {
                   />
                   
                   <div className="py-12 px-6 text-center">
-                    <div className="mx-auto w-16 h-16 mb-4 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
-                      <Upload className="w-8 h-8 text-white" />
+                    <div className="relative mx-auto w-16 h-16 mb-4">
+                      <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full opacity-20 blur"></div>
+                      <div className="relative w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-white" />
+                      </div>
                     </div>
-                    <p className="text-lg font-semibold text-slate-700 mb-2">
+                    <p className="text-lg font-semibold text-white mb-2">
                       {selectedFile ? 'File Selected' : 'Choose a video file'}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-400">
                       Click to browse or drag and drop
                     </p>
-                    <p className="text-xs text-slate-400 mt-2">
+                    <p className="text-xs text-slate-500 mt-2">
                       Max file size: 100MB
                     </p>
                   </div>
@@ -145,7 +154,7 @@ function AdminUpload() {
               </label>
 
               {errors.videoFile && (
-                <div className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-3 rounded-lg">
+                <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl">
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <span className="text-sm font-medium">{errors.videoFile.message}</span>
                 </div>
@@ -154,17 +163,18 @@ function AdminUpload() {
 
             {/* Selected File Info */}
             {selectedFile && (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5">
-                <div className="flex items-start gap-4">
-                  <div className="bg-blue-500 p-3 rounded-lg">
+              <div className="relative bg-slate-800/30 border border-slate-700/50 rounded-xl p-5 backdrop-blur-sm">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl opacity-10 blur"></div>
+                <div className="relative flex items-start gap-4">
+                  <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-3 rounded-lg">
                     <FileVideo className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-slate-800 truncate text-lg">
+                    <p className="font-semibold text-white truncate text-lg">
                       {selectedFile.name}
                     </p>
-                    <p className="text-slate-600 mt-1">
-                      Size: <span className="font-medium">{formatFileSize(selectedFile.size)}</span>
+                    <p className="text-slate-400 mt-1">
+                      Size: <span className="font-medium text-slate-300">{formatFileSize(selectedFile.size)}</span>
                     </p>
                   </div>
                 </div>
@@ -174,13 +184,14 @@ function AdminUpload() {
             {/* Upload Progress */}
             {uploading && (
               <div className="space-y-3">
-                <div className="flex justify-between items-center text-sm font-medium text-slate-700">
+                <div className="flex justify-between items-center text-sm font-medium text-slate-300">
                   <span>Uploading...</span>
-                  <span className="text-blue-600">{uploadProgress}%</span>
+                  <span className="text-purple-400">{uploadProgress}%</span>
                 </div>
-                <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div className="relative h-3 bg-slate-800/50 border border-slate-700/50 rounded-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20"></div>
                   <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 ease-out rounded-full"
+                    className="relative h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ease-out rounded-full shadow-lg shadow-purple-500/50"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -189,7 +200,7 @@ function AdminUpload() {
 
             {/* Error Message */}
             {errors.root && (
-              <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 px-5 py-4 rounded-xl backdrop-blur-sm">
                 <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <span className="text-sm font-medium">{errors.root.message}</span>
               </div>
@@ -197,23 +208,24 @@ function AdminUpload() {
 
             {/* Success Message */}
             {uploadedVideo && (
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="bg-green-500 p-3 rounded-full">
+              <div className="relative bg-slate-800/30 border border-slate-700/50 rounded-xl p-6 backdrop-blur-sm">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl opacity-10 blur"></div>
+                <div className="relative flex items-start gap-4">
+                  <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-3 rounded-full">
                     <CheckCircle className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-green-900 mb-3">
+                    <h3 className="text-lg font-bold text-white mb-3">
                       Upload Successful!
                     </h3>
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-green-700">
-                        <Clock className="w-4 h-4" />
-                        <span>Duration: <span className="font-semibold">{formatDuration(uploadedVideo.duration)}</span></span>
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <Clock className="w-4 h-4 text-purple-400" />
+                        <span>Duration: <span className="font-semibold text-white">{formatDuration(uploadedVideo.duration)}</span></span>
                       </div>
-                      <div className="flex items-center gap-2 text-green-700">
-                        <Calendar className="w-4 h-4" />
-                        <span>Uploaded: <span className="font-semibold">{new Date(uploadedVideo.uploadedAt).toLocaleString()}</span></span>
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <Calendar className="w-4 h-4 text-purple-400" />
+                        <span>Uploaded: <span className="font-semibold text-white">{new Date(uploadedVideo.uploadedAt).toLocaleString()}</span></span>
                       </div>
                     </div>
                   </div>
@@ -223,25 +235,33 @@ function AdminUpload() {
 
             {/* Upload Button */}
             <div className="pt-4">
-              <button
-                type="submit"
-                disabled={uploading || !selectedFile}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-300 disabled:to-slate-400 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-3 text-lg"
-              >
-                {uploading ? (
-                  <>
-                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-5 h-5" />
-                    Upload Video
-                  </>
-                )}
-              </button>
+              <div className="relative group">
+                <div className={`absolute -inset-0.5 rounded-xl opacity-0 blur transition-opacity duration-300 ${
+                  !uploading && selectedFile 
+                    ? 'group-hover:opacity-75 bg-gradient-to-r from-purple-600 to-pink-600' 
+                    : ''
+                }`}></div>
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={uploading || !selectedFile}
+                  className="relative w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-slate-700 disabled:to-slate-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg"
+                >
+                  {uploading ? (
+                    <>
+                      <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5" />
+                      Upload Video
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
