@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosClient from '../utils/axiosClient';
 import { NavLink } from 'react-router';
-import { Upload, Trash2, AlertCircle, Video, Search, Filter } from 'lucide-react';
+import { Upload, Trash2, AlertCircle, Video, Search, Filter, Sparkles } from 'lucide-react';
 
 const AdminVideo = () => {
   const [problems, setProblems] = useState([]);
@@ -65,22 +65,25 @@ const AdminVideo = () => {
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case 'Easy':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-500/10 text-green-400 border-green-500/20';
       case 'Medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
       case 'Hard':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
       default:
-        return 'bg-slate-100 text-slate-800 border-slate-200';
+        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex justify-center items-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600 font-medium">Loading problems...</p>
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-75 blur animate-pulse"></div>
+            <div className="relative w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-slate-400 font-medium">Loading problems...</p>
         </div>
       </div>
     );
@@ -88,21 +91,21 @@ const AdminVideo = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center p-4">
-        <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 max-w-md w-full">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex justify-center items-center p-4">
+        <div className="bg-rose-500/10 border-2 border-rose-500/20 rounded-xl p-6 max-w-md w-full backdrop-blur-sm">
           <div className="flex items-start gap-4">
-            <div className="bg-red-500 p-3 rounded-full">
+            <div className="bg-gradient-to-br from-rose-600 to-rose-700 p-3 rounded-full">
               <AlertCircle className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-red-900 mb-2">Error</h3>
-              <p className="text-red-700">{error}</p>
+              <h3 className="text-lg font-bold text-rose-400 mb-2">Error</h3>
+              <p className="text-slate-300">{error}</p>
               <button
                 onClick={() => {
                   setError(null);
                   fetchProblems();
                 }}
-                className="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                className="mt-4 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-rose-500/20"
               >
                 Try Again
               </button>
@@ -114,35 +117,41 @@ const AdminVideo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-                <Video className="w-8 h-8 text-white" />
+        <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800/50 shadow-2xl overflow-hidden mb-6">
+          <div className="relative px-8 py-6 border-b border-slate-800/50">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 opacity-10 blur"></div>
+            <div className="relative flex items-center gap-3">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                  <Video className="w-6 h-6 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                  <Sparkles className="w-2.5 h-2.5 text-white" />
+                </div>
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">Video Management</h1>
-                <p className="text-blue-100 mt-1">Upload and manage problem solution videos</p>
+                <p className="text-slate-400 mt-1">Upload and manage problem solution videos</p>
               </div>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="p-6 bg-slate-50 border-b border-slate-200">
+          <div className="p-6 bg-slate-800/30 border-b border-slate-800/50">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 w-5 h-5" />
                   <input
                     type="text"
                     placeholder="Search by title or tags..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
                   />
                 </div>
               </div>
@@ -150,11 +159,11 @@ const AdminVideo = () => {
               {/* Difficulty Filter */}
               <div className="lg:w-64">
                 <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 w-5 h-5" />
                   <select
                     value={difficultyFilter}
                     onChange={(e) => setDifficultyFilter(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all appearance-none"
                   >
                     <option value="All">All Difficulties</option>
                     <option value="Easy">Easy</option>
@@ -166,53 +175,53 @@ const AdminVideo = () => {
             </div>
 
             {/* Results Count */}
-            <div className="mt-4 text-sm text-slate-600">
-              Showing <span className="font-semibold text-slate-900">{filteredProblems.length}</span> of{' '}
-              <span className="font-semibold text-slate-900">{problems.length}</span> problems
+            <div className="mt-4 text-sm text-slate-400">
+              Showing <span className="font-semibold text-white">{filteredProblems.length}</span> of{' '}
+              <span className="font-semibold text-white">{problems.length}</span> problems
             </div>
           </div>
         </div>
 
         {/* Table */}
         {filteredProblems.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-slate-400" />
+          <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800/50 rounded-2xl shadow-xl p-12 text-center">
+            <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-8 h-8 text-slate-500" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-800 mb-2">No problems found</h3>
-            <p className="text-slate-600">Try adjusting your search or filter criteria</p>
+            <h3 className="text-xl font-semibold text-white mb-2">No problems found</h3>
+            <p className="text-slate-400">Try adjusting your search or filter criteria</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="overflow-x-auto">
+          <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800/50 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider w-16">
+                  <tr className="bg-slate-800/30 border-b border-slate-800/50">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider w-16">
                       #
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Title
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Difficulty
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Tags
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-slate-800/50">
                   {filteredProblems.map((problem, index) => (
-                    <tr key={problem._id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={problem._id} className="hover:bg-slate-800/30 transition-colors">
                       <td className="px-6 py-4 text-sm font-medium text-slate-500">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-semibold text-slate-900">{problem.title}</div>
+                        <div className="text-sm font-semibold text-white">{problem.title}</div>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(problem.difficulty)}`}>
@@ -220,7 +229,7 @@ const AdminVideo = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
                           {problem.tags}
                         </span>
                       </td>
@@ -228,17 +237,21 @@ const AdminVideo = () => {
                         <div className="flex items-center justify-center gap-2">
                           <NavLink
                             to={`/admin/upload/${problem._id}`}
-                            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md font-medium text-sm"
+                            className="relative group inline-flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-all font-medium text-sm overflow-hidden"
                           >
-                            <Upload className="w-4 h-4" />
-                            Upload
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transition-opacity group-hover:opacity-100 opacity-90"></div>
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg opacity-0 group-hover:opacity-50 blur transition-opacity"></div>
+                            <Upload className="w-4 h-4 relative z-10" />
+                            <span className="relative z-10">Upload</span>
                           </NavLink>
                           <button
                             onClick={() => handleDelete(problem._id)}
-                            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md font-medium text-sm"
+                            className="relative group inline-flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-all font-medium text-sm overflow-hidden"
                           >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
+                            <div className="absolute inset-0 bg-gradient-to-r from-rose-600 to-rose-700 transition-opacity group-hover:opacity-100 opacity-90"></div>
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-rose-600 to-rose-700 rounded-lg opacity-0 group-hover:opacity-50 blur transition-opacity"></div>
+                            <Trash2 className="w-4 h-4 relative z-10" />
+                            <span className="relative z-10">Delete</span>
                           </button>
                         </div>
                       </td>
@@ -250,6 +263,24 @@ const AdminVideo = () => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.5);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(168, 85, 247, 0.4);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(168, 85, 247, 0.6);
+        }
+      `}</style>
     </div>
   );
 };
