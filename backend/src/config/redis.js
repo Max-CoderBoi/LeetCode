@@ -10,10 +10,10 @@ const redisClient = createClient({
 });
 
 
-// Add error handling
+
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-// IMPORTANT: Connect before using
+
 
 
 module.exports = redisClient;

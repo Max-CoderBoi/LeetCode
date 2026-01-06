@@ -155,30 +155,6 @@ function Admin() {
           })}
         </div>
 
-        {/* Footer Info */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-slate-400">All systems operational</span>
-          </div>
-        </div>
-
-        {/* Security Notice */}
-        <div className="mt-8 max-w-3xl mx-auto">
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Shield className="text-blue-400" size={20} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-400 mb-2">Security Notice</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  All admin actions are logged and monitored. Please ensure you have proper authorization before making changes to the platform. Unauthorized access or misuse may result in account suspension.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <style jsx>{`
