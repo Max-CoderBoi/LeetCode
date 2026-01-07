@@ -3,6 +3,9 @@ import { NavLink } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosClient from '../utils/axiosClient';
 import { logoutUser } from '../authSlice';
+import { SimplePagination } from '../components/ui/simple-pagination';
+
+const ITEMS_PER_PAGE = 5;
 
 function Homepage() {
   const dispatch = useDispatch();
@@ -11,6 +14,7 @@ function Homepage() {
   const [solvedProblems, setSolvedProblems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     difficulty: 'all',
     tag: 'all',
@@ -21,10 +25,15 @@ function Homepage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-    }, 1000);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  // Reset to page 1 when filters or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchQuery, filters]);
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -63,6 +72,12 @@ function Homepage() {
                        problem.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     return difficultyMatch && tagMatch && statusMatch && searchMatch;
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProblems.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedProblems = filteredProblems.slice(startIndex, endIndex);
 
   const stats = {
     total: problems.length,
@@ -241,9 +256,16 @@ function Homepage() {
           </div>
         </div>
 
+        {/* Results Summary */}
+        {filteredProblems.length > 0 && (
+          <div className="mb-4 text-sm text-base-content/60">
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredProblems.length)} of {filteredProblems.length} problems
+          </div>
+        )}
+
         {/* Problems List */}
         <div className="space-y-3">
-          {filteredProblems.length === 0 ? (
+          {paginatedProblems.length === 0 ? (
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body text-center py-16">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-base-content/20 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,43 +275,56 @@ function Homepage() {
               </div>
             </div>
           ) : (
-            filteredProblems.map(problem => (
-              <div key={problem._id} className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
-                <div className="card-body p-4 md:p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-1">
-                          <NavLink 
-                            to={`/problem/${problem._id}`} 
-                            className="text-lg md:text-xl font-semibold hover:text-primary transition-colors"
-                          >
-                            {problem.title}
-                          </NavLink>
-                          <div className="flex flex-wrap gap-2 mt-3">
-                            <div className={`badge ${getDifficultyBadgeColor(problem.difficulty)} badge-lg font-medium`}>
-                              {problem.difficulty}
-                            </div>
-                            <div className="badge badge-outline badge-lg">
-                              {problem.tags}
+            <>
+              {paginatedProblems.map(problem => (
+                <div key={problem._id} className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
+                  <div className="card-body p-4 md:p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1">
+                            <NavLink 
+                              to={`/problem/${problem._id}`} 
+                              className="text-lg md:text-xl font-semibold hover:text-primary transition-colors"
+                            >
+                              {problem.title}
+                            </NavLink>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              <div className={`badge ${getDifficultyBadgeColor(problem.difficulty)} badge-lg font-medium`}>
+                                {problem.difficulty}
+                              </div>
+                              <div className="badge badge-outline badge-lg">
+                                {problem.tags}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                      
+                      {solvedProblems.some(sp => sp._id === problem._id) && (
+                        <div className="badge badge-success gap-2 badge-lg font-medium self-start md:self-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Solved
+                        </div>
+                      )}
                     </div>
-                    
-                    {solvedProblems.some(sp => sp._id === problem._id) && (
-                      <div className="badge badge-success gap-2 badge-lg font-medium self-start md:self-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        Solved
-                      </div>
-                    )}
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+
+              {/* Pagination Component */}
+              {totalPages > 1 && (
+                <div className="mt-8 flex justify-center">
+                  <SimplePagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
