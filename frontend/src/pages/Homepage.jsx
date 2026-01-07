@@ -10,11 +10,21 @@ function Homepage() {
   const [problems, setProblems] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     difficulty: 'all',
     tag: 'all',
     status: 'all' 
   });
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -49,8 +59,8 @@ function Homepage() {
     const tagMatch = filters.tag === 'all' || problem.tags === filters.tag;
     const statusMatch = filters.status === 'all' || 
                       (filters.status === 'solved' && solvedProblems.some(sp => sp._id === problem._id));
-    const searchMatch = searchQuery === '' || 
-                       problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchMatch = debouncedSearchQuery === '' || 
+                       problem.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     return difficultyMatch && tagMatch && statusMatch && searchMatch;
   });
 
