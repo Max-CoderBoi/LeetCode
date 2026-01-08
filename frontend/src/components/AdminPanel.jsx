@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ChevronDown, ChevronUp, Plus, X, Eye, Save, AlertCircle, CheckCircle, Code, TestTube, FileText } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, X, AlertCircle, CheckCircle } from 'lucide-react';
 
 // Zod schema
 const problemSchema = z.object({
@@ -37,18 +37,18 @@ const problemSchema = z.object({
   ).length(3, 'All three languages required')
 });
 
-// Toast Notification Component
+// Toast Notification
 function Toast({ message, type, onClose }) {
   useEffect(() => {
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+  const bgColor = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
   const Icon = type === 'success' ? CheckCircle : AlertCircle;
 
   return (
-    <div className={`fixed top-4 right-4 ${bgColor} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-slide-in z-50`}>
+    <div className={`fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded shadow-lg flex items-center gap-2 z-50`}>
       <Icon className="w-5 h-5" />
       <span>{message}</span>
       <button onClick={onClose} className="ml-2 hover:opacity-80">
@@ -58,45 +58,39 @@ function Toast({ message, type, onClose }) {
   );
 }
 
-// Collapsible Section Component
-function CollapsibleSection({ title, icon: Icon, children, defaultOpen = true }) {
+// Collapsible Section
+function CollapsibleSection({ title, children, defaultOpen = true }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+    <div className="bg-gray-800 rounded border border-gray-700">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 transition-colors"
+        className="w-full px-4 py-3 flex items-center justify-between bg-gray-800 hover:bg-gray-750 transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <Icon className="w-5 h-5 text-blue-600" />
-          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-        </div>
-        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        <h2 className="text-lg font-semibold text-gray-100">{title}</h2>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
       </button>
-      {isOpen && <div className="p-6">{children}</div>}
+      {isOpen && <div className="p-4 border-t border-gray-700">{children}</div>}
     </div>
   );
 }
 
-// Code Editor Component
+// Code Editor
 function CodeEditor({ value, onChange, language, placeholder }) {
   return (
     <div className="relative">
-      <div className="absolute top-2 right-2 bg-gray-800 text-gray-300 px-3 py-1 rounded text-xs font-mono z-10">
+      <div className="absolute top-2 right-2 bg-gray-900 text-gray-400 px-2 py-1 rounded text-xs font-mono z-10">
         {language}
       </div>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-gray-900 text-gray-100 font-mono text-sm p-4 rounded-lg border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[200px] resize-y"
+        className="w-full bg-gray-950 text-gray-200 font-mono text-sm p-3 rounded border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none min-h-[200px] resize-y"
         spellCheck="false"
       />
-      <div className="text-xs text-gray-500 mt-1">
-        Lines: {value.split('\n').length} | Characters: {value.length}
-      </div>
     </div>
   );
 }
@@ -104,7 +98,6 @@ function CodeEditor({ value, onChange, language, placeholder }) {
 function AdminPanel() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const {
@@ -154,7 +147,6 @@ function AdminPanel() {
     setHasUnsavedChanges(isDirty);
   }, [isDirty]);
 
-  // Warn before leaving with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (hasUnsavedChanges) {
@@ -169,11 +161,8 @@ function AdminPanel() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      // await axiosClient.post('/problem/create', data);
-      
-      setToast({ message: 'Problem created successfully! 🎉', type: 'success' });
+      setToast({ message: 'Problem created successfully', type: 'success' });
       setHasUnsavedChanges(false);
       console.log('Problem data:', data);
     } catch (error) {
@@ -186,57 +175,34 @@ function AdminPanel() {
     }
   };
 
-  const getDifficultyColor = (diff) => {
-    const colors = {
-      easy: 'text-green-600 bg-green-100',
-      medium: 'text-yellow-600 bg-yellow-100',
-      hard: 'text-red-600 bg-red-100'
-    };
-    return colors[diff] || colors.easy;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-gray-900 py-6 px-4">
       {toast && <Toast {...toast} onClose={() => setToast(null)} />}
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Create New Problem</h1>
-              <p className="text-gray-600">Design a coding challenge for the platform</p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowPreview(!showPreview)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-              >
-                <Eye className="w-4 h-4" />
-                {showPreview ? 'Hide' : 'Show'} Preview
-              </button>
-            </div>
-          </div>
+        <div className="bg-gray-800 rounded border border-gray-700 p-5 mb-5">
+          <h1 className="text-2xl font-bold text-gray-100 mb-1">Create New Problem</h1>
+          <p className="text-gray-400 text-sm">Design a coding challenge for the platform</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Basic Information */}
-          <CollapsibleSection title="Basic Information" icon={FileText}>
-            <div className="space-y-5">
+          <CollapsibleSection title="Basic Information">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Problem Title *
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Problem Title
                 </label>
                 <input
                   {...register('title')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                    errors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-3 py-2 bg-gray-950 border rounded text-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none ${
+                    errors.title ? 'border-red-500' : 'border-gray-700'
                   }`}
                   placeholder="e.g., Two Sum"
                 />
                 {errors.title && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
                     {errors.title.message}
                   </p>
@@ -244,57 +210,51 @@ function AdminPanel() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Problem Description *
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Problem Description
                 </label>
                 <textarea
                   {...register('description')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[150px] ${
-                    errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-3 py-2 bg-gray-950 border rounded text-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none min-h-[120px] ${
+                    errors.description ? 'border-red-500' : 'border-gray-700'
                   }`}
-                  placeholder="Describe the problem in detail. Include constraints, examples, and edge cases..."
+                  placeholder="Describe the problem in detail..."
                 />
-                <div className="flex justify-between items-center mt-1">
-                  {errors.description ? (
-                    <p className="text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.description.message}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-gray-500">
-                      {formData.description?.length || 0} characters
-                    </p>
-                  )}
-                </div>
+                {errors.description && (
+                  <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.description.message}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Difficulty *
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Difficulty
                   </label>
                   <select
                     {...register('difficulty')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="easy">🟢 Easy</option>
-                    <option value="medium">🟡 Medium</option>
-                    <option value="hard">🔴 Hard</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Category
                   </label>
                   <select
                     {...register('tags')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="array">📊 Array</option>
-                    <option value="linkedList">🔗 Linked List</option>
-                    <option value="graph">🕸️ Graph</option>
-                    <option value="dp">💎 Dynamic Programming</option>
+                    <option value="array">Array</option>
+                    <option value="linkedList">Linked List</option>
+                    <option value="graph">Graph</option>
+                    <option value="dp">Dynamic Programming</option>
                   </select>
                 </div>
               </div>
@@ -302,56 +262,56 @@ function AdminPanel() {
           </CollapsibleSection>
 
           {/* Test Cases */}
-          <CollapsibleSection title="Test Cases" icon={TestTube}>
+          <CollapsibleSection title="Test Cases">
             {/* Visible Test Cases */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Visible Test Cases</h3>
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-base font-semibold text-gray-200">Visible Test Cases</h3>
                 <button
                   type="button"
                   onClick={() => appendVisible({ input: '', output: '', explanation: '' })}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Add Test Case
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {visibleFields.map((field, index) => (
-                  <div key={field.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm font-medium text-gray-700">Test Case {index + 1}</span>
+                  <div key={field.id} className="bg-gray-850 border border-gray-700 rounded p-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-300">Test Case {index + 1}</span>
                       <button
                         type="button"
                         onClick={() => removeVisible(index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 rounded transition-colors"
+                        className="text-red-400 hover:text-red-300 p-1"
                         disabled={visibleFields.length === 1}
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <input
                         {...register(`visibleTestCases.${index}.input`)}
                         placeholder="Input (e.g., [2,7,11,15], 9)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                       />
                       <input
                         {...register(`visibleTestCases.${index}.output`)}
                         placeholder="Expected Output (e.g., [0,1])"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                       />
                       <textarea
                         {...register(`visibleTestCases.${index}.explanation`)}
                         placeholder="Explanation for this test case..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-h-[60px]"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 text-sm min-h-[60px] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                       />
                     </div>
                     
                     {errors.visibleTestCases?.[index] && (
-                      <p className="mt-2 text-sm text-red-600">Please fill all fields</p>
+                      <p className="mt-2 text-sm text-red-400">Please fill all fields</p>
                     )}
                   </div>
                 ))}
@@ -360,48 +320,48 @@ function AdminPanel() {
 
             {/* Hidden Test Cases */}
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Hidden Test Cases</h3>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-base font-semibold text-gray-200">Hidden Test Cases</h3>
                 <button
                   type="button"
                   onClick={() => appendHidden({ input: '', output: '' })}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Add Hidden Case
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {hiddenFields.map((field, index) => (
-                  <div key={field.id} className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm font-medium text-gray-700">Hidden Case {index + 1}</span>
+                  <div key={field.id} className="bg-gray-850 border border-purple-900 rounded p-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-300">Hidden Case {index + 1}</span>
                       <button
                         type="button"
                         onClick={() => removeHidden(index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 rounded transition-colors"
+                        className="text-red-400 hover:text-red-300 p-1"
                         disabled={hiddenFields.length === 1}
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <input
                         {...register(`hiddenTestCases.${index}.input`)}
                         placeholder="Input"
-                        className="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:outline-none"
                       />
                       <input
                         {...register(`hiddenTestCases.${index}.output`)}
                         placeholder="Expected Output"
-                        className="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                        className="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded text-gray-200 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:outline-none"
                       />
                     </div>
                     
                     {errors.hiddenTestCases?.[index] && (
-                      <p className="mt-2 text-sm text-red-600">Please fill all fields</p>
+                      <p className="mt-2 text-sm text-red-400">Please fill all fields</p>
                     )}
                   </div>
                 ))}
@@ -410,28 +370,25 @@ function AdminPanel() {
           </CollapsibleSection>
 
           {/* Code Templates */}
-          <CollapsibleSection title="Code Templates & Solutions" icon={Code}>
-            <div className="space-y-8">
+          <CollapsibleSection title="Code Templates and Solutions">
+            <div className="space-y-6">
               {['C++', 'Java', 'JavaScript'].map((lang, index) => (
-                <div key={lang} className="bg-gray-50 rounded-lg p-5 border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    {lang}
-                  </h3>
+                <div key={lang} className="bg-gray-850 rounded p-4 border border-gray-700">
+                  <h3 className="text-base font-semibold text-gray-200 mb-3">{lang}</h3>
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Starter Code (Template for users)
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Starter Code
                       </label>
                       <CodeEditor
                         value={formData.startCode?.[index]?.initialCode || ''}
                         onChange={(value) => setValue(`startCode.${index}.initialCode`, value, { shouldDirty: true })}
                         language={lang}
-                        placeholder={`// ${lang} starter code here...\n// Example:\nclass Solution {\n  // Your code\n}`}
+                        placeholder={`// ${lang} starter code here...`}
                       />
                       {errors.startCode?.[index]?.initialCode && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                           <AlertCircle className="w-4 h-4" />
                           {errors.startCode[index].initialCode.message}
                         </p>
@@ -439,8 +396,8 @@ function AdminPanel() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Reference Solution (Complete working code)
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Reference Solution
                       </label>
                       <CodeEditor
                         value={formData.referenceSolution?.[index]?.completeCode || ''}
@@ -449,7 +406,7 @@ function AdminPanel() {
                         placeholder={`// ${lang} complete solution here...`}
                       />
                       {errors.referenceSolution?.[index]?.completeCode && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                           <AlertCircle className="w-4 h-4" />
                           {errors.referenceSolution[index].completeCode.message}
                         </p>
@@ -462,11 +419,11 @@ function AdminPanel() {
           </CollapsibleSection>
 
           {/* Submit Button */}
-          <div className="sticky bottom-4 bg-white rounded-xl shadow-2xl p-6 border border-gray-200">
+          <div className="bg-gray-800 rounded border border-gray-700 p-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <div>
                 {hasUnsavedChanges && (
-                  <span className="text-sm text-amber-600 flex items-center gap-2">
+                  <span className="text-sm text-yellow-500 flex items-center gap-2">
                     <AlertCircle className="w-4 h-4" />
                     Unsaved changes
                   </span>
@@ -477,78 +434,24 @@ function AdminPanel() {
                 type="button"
                 onClick={handleSubmit(onSubmit)}
                 disabled={isSubmitting}
-                className={`flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-white transition-all ${
+                className={`px-6 py-2 rounded font-semibold text-white transition-colors ${
                   isSubmitting
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'
+                    ? 'bg-gray-600 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
                 }`}
               >
                 {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Creating Problem...
-                  </>
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating...
+                  </span>
                 ) : (
-                  <>
-                    <Save className="w-5 h-5" />
-                    Create Problem
-                  </>
+                  'Create Problem'
                 )}
               </button>
             </div>
           </div>
         </div>
-
-        {/* Preview Modal */}
-        {showPreview && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowPreview(false)}>
-            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">Problem Preview</h2>
-                <button
-                  type="button"
-                  onClick={() => setShowPreview(false)}
-                  className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-lg"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              
-              <div className="p-6 space-y-6">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{formData.title || 'Untitled Problem'}</h1>
-                  <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(formData.difficulty)}`}>
-                      {formData.difficulty?.toUpperCase()}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700">
-                      {formData.tags}
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Description</h3>
-                  <p className="text-gray-700 whitespace-pre-wrap">{formData.description || 'No description provided'}</p>
-                </div>
-
-                {formData.visibleTestCases?.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Example Test Cases</h3>
-                    {formData.visibleTestCases.map((tc, i) => (
-                      <div key={i} className="bg-gray-50 p-4 rounded-lg mb-3">
-                        <p className="font-medium">Example {i + 1}:</p>
-                        <p className="text-sm mt-1"><strong>Input:</strong> {tc.input}</p>
-                        <p className="text-sm"><strong>Output:</strong> {tc.output}</p>
-                        <p className="text-sm text-gray-600 mt-1">{tc.explanation}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
