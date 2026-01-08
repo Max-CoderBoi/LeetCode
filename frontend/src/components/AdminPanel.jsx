@@ -98,6 +98,7 @@ function CodeEditor({ value, onChange, language, placeholder }) {
 function AdminPanel() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const {
@@ -182,8 +183,19 @@ function AdminPanel() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="bg-gray-800 rounded border border-gray-700 p-5 mb-5">
-          <h1 className="text-2xl font-bold text-gray-100 mb-1">Create New Problem</h1>
-          <p className="text-gray-400 text-sm">Design a coding challenge for the platform</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-100 mb-1">Create New Problem</h1>
+              <p className="text-gray-400 text-sm">Design a coding challenge for the platform</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              className="px-4 py-2 bg-gray-700 text-gray-200 rounded hover:bg-gray-600 transition-colors text-sm"
+            >
+              {showPreview ? 'Hide Preview' : 'Show Preview'}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-5">
@@ -452,6 +464,61 @@ function AdminPanel() {
             </div>
           </div>
         </div>
+
+        {/* Preview Modal */}
+        {showPreview && (
+          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50" onClick={() => setShowPreview(false)}>
+            <div className="bg-gray-800 rounded border border-gray-700 max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="sticky top-0 bg-gray-800 border-b border-gray-700 px-5 py-4 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-100">Problem Preview</h2>
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(false)}
+                  className="text-gray-400 hover:text-gray-200 p-2 hover:bg-gray-700 rounded"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-5 space-y-5">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-100 mb-2">{formData.title || 'Untitled Problem'}</h1>
+                  <div className="flex items-center gap-3">
+                    <span className={`px-3 py-1 rounded text-sm font-medium ${
+                      formData.difficulty === 'easy' ? 'bg-green-900 text-green-200' :
+                      formData.difficulty === 'medium' ? 'bg-yellow-900 text-yellow-200' :
+                      'bg-red-900 text-red-200'
+                    }`}>
+                      {formData.difficulty?.toUpperCase()}
+                    </span>
+                    <span className="px-3 py-1 rounded text-sm font-medium bg-gray-700 text-gray-200">
+                      {formData.tags}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold text-gray-200 mb-2">Description</h3>
+                  <p className="text-gray-300 whitespace-pre-wrap">{formData.description || 'No description provided'}</p>
+                </div>
+
+                {formData.visibleTestCases?.length > 0 && (
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-200 mb-2">Example Test Cases</h3>
+                    {formData.visibleTestCases.map((tc, i) => (
+                      <div key={i} className="bg-gray-850 border border-gray-700 p-3 rounded mb-3">
+                        <p className="font-medium text-gray-200">Example {i + 1}:</p>
+                        <p className="text-sm mt-1 text-gray-300"><strong>Input:</strong> {tc.input}</p>
+                        <p className="text-sm text-gray-300"><strong>Output:</strong> {tc.output}</p>
+                        <p className="text-sm text-gray-400 mt-1">{tc.explanation}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
