@@ -8,9 +8,9 @@ import { registerUser } from '../authSlice';
 import { Check, X } from 'lucide-react';
 
 const signupSchema = z.object({
-  firstName: z.string().min(3, "Minimum character should be 3"),
-  emailId: z.string().email("Invalid Email"),
-  password: z.string().min(8, "Password is too weak")
+  firstName: z.string().min(3, "Min 3 characters"),
+  emailId: z.string().email("Invalid email"),
+  password: z.string().min(8, "Min 8 characters")
 });
 
 function Signup() {
@@ -18,7 +18,7 @@ function Signup() {
   const [passwordValue, setPasswordValue] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -27,16 +27,11 @@ function Signup() {
   } = useForm({ resolver: zodResolver(signupSchema) });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
+    if (isAuthenticated) navigate('/');
   }, [isAuthenticated, navigate]);
 
-  const onSubmit = (data) => {
-    dispatch(registerUser(data));
-  };
+  const onSubmit = (data) => dispatch(registerUser(data));
 
-  // Password validation checks
   const passwordChecks = {
     minLength: passwordValue.length >= 8,
     hasNumber: /\d/.test(passwordValue),
@@ -44,141 +39,84 @@ function Signup() {
     hasUpperCase: /[A-Z]/.test(passwordValue)
   };
 
-  const CheckIcon = ({ met }) => (
-    <div className={`w-4 h-4 rounded-full flex items-center justify-center transition-all duration-200 ${
-      met ? 'bg-green-500' : 'bg-slate-700'
-    }`}>
-      {met ? (
-        <Check size={12} className="text-white" />
-      ) : (
-        <X size={12} className="text-slate-500" />
-      )}
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-purple-900 to-slate-950">
       <div className="w-full max-w-md">
-        {/* Card with dark theme */}
-        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:shadow-purple-500/20 hover:shadow-3xl border border-slate-800/50">
-          <div className="p-8 sm:p-10">
-            {/* Logo/Brand Section */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-full p-4 shadow-lg shadow-purple-500/50">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-slate-800/50">
+          <div className="p-6 sm:p-8">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <div className="inline-flex bg-gradient-to-r from-purple-600 to-pink-600 rounded-full p-3 mb-3 shadow-lg shadow-purple-500/50">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
               </div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Create Account
+              </h2>
             </div>
 
-            {/* Title */}
-            <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-              Create Account
-            </h2>
-            <p className="text-center text-slate-400 mb-8">
-              Join thousands of coders worldwide
-            </p>
-
-            {/* Form */}
-            <div className="space-y-6">
-              {/* First Name Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-medium text-slate-300">First Name</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="John"
-                    className={`input w-full pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-500 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:bg-slate-800 rounded-lg ${
-                      errors.firstName ? 'border-red-500 focus:ring-red-500' : ''
-                    }`}
-                    {...register('firstName')}
-                  />
-                </div>
+            <div className="space-y-4">
+              {/* First Name */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">First Name</label>
+                <input
+                  type="text"
+                  placeholder="John"
+                  className={`w-full px-4 py-2.5 bg-slate-800/50 border ${
+                    errors.firstName ? 'border-red-500' : 'border-slate-700/50'
+                  } text-white placeholder-slate-500 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:outline-none transition-all`}
+                  {...register('firstName')}
+                />
                 {errors.firstName && (
-                  <span className="text-red-400 text-sm mt-1 flex items-center animate-fade-in">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {errors.firstName.message}
-                  </span>
+                  <span className="text-red-400 text-xs mt-1 block">{errors.firstName.message}</span>
                 )}
               </div>
 
-              {/* Email Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-medium text-slate-300">Email Address</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                    </svg>
-                  </div>
-                  <input
-                    type="email"
-                    placeholder="john@example.com"
-                    className={`input w-full pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-500 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:bg-slate-800 rounded-lg ${
-                      errors.emailId ? 'border-red-500 focus:ring-red-500' : ''
-                    }`}
-                    {...register('emailId')}
-                  />
-                </div>
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+                <input
+                  type="email"
+                  placeholder="john@example.com"
+                  className={`w-full px-4 py-2.5 bg-slate-800/50 border ${
+                    errors.emailId ? 'border-red-500' : 'border-slate-700/50'
+                  } text-white placeholder-slate-500 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:outline-none transition-all`}
+                  {...register('emailId')}
+                />
                 {errors.emailId && (
-                  <span className="text-red-400 text-sm mt-1 flex items-center animate-fade-in">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {errors.emailId.message}
-                  </span>
+                  <span className="text-red-400 text-xs mt-1 block">{errors.emailId.message}</span>
                 )}
               </div>
 
-              {/* Password Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-medium text-slate-300">Password</span>
-                </label>
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className={`input w-full pl-10 pr-12 bg-slate-800/50 border-slate-700/50 text-white placeholder-slate-500 transition-all duration-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:bg-slate-800 rounded-lg ${
-                      errors.password ? 'border-red-500 focus:ring-red-500' : ''
-                    }`}
+                    className={`w-full px-4 py-2.5 pr-10 bg-slate-800/50 border ${
+                      errors.password ? 'border-red-500' : 'border-slate-700/50'
+                    } text-white placeholder-slate-500 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500/50 focus:outline-none transition-all`}
                     {...register('password', {
                       onChange: (e) => setPasswordValue(e.target.value)
                     })}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleSubmit(onSubmit)();
-                      }
+                      if (e.key === 'Enter') handleSubmit(onSubmit)();
                     }}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors duration-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                       </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
@@ -186,104 +124,58 @@ function Signup() {
                   </button>
                 </div>
                 {errors.password && (
-                  <span className="text-red-400 text-sm mt-1 flex items-center animate-fade-in">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {errors.password.message}
-                  </span>
+                  <span className="text-red-400 text-xs mt-1 block">{errors.password.message}</span>
                 )}
-              </div>
-
-              {/* Dynamic Password Requirements */}
-              <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg p-4 border border-slate-700/50">
-                <p className="text-xs text-slate-400 mb-3 font-medium">Password must contain:</p>
-                <div className="space-y-2">
-                  <div className={`flex items-center gap-2 text-sm transition-colors duration-200 ${
-                    passwordChecks.minLength ? 'text-green-400' : 'text-slate-500'
-                  }`}>
-                    <CheckIcon met={passwordChecks.minLength} />
-                    <span>At least 8 characters</span>
+                
+                {/* Compact Password Checks */}
+                {passwordValue && (
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    {[
+                      { key: 'minLength', label: '8+ chars' },
+                      { key: 'hasNumber', label: 'Number' },
+                      { key: 'hasSpecialChar', label: 'Special' },
+                      { key: 'hasUpperCase', label: 'Uppercase' }
+                    ].map(({ key, label }) => (
+                      <span
+                        key={key}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded transition-all ${
+                          passwordChecks[key]
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-slate-700/50 text-slate-500'
+                        }`}
+                      >
+                        {passwordChecks[key] ? <Check size={12} /> : <X size={12} />}
+                        {label}
+                      </span>
+                    ))}
                   </div>
-                  <div className={`flex items-center gap-2 text-sm transition-colors duration-200 ${
-                    passwordChecks.hasNumber ? 'text-green-400' : 'text-slate-500'
-                  }`}>
-                    <CheckIcon met={passwordChecks.hasNumber} />
-                    <span>At least one number (0-9)</span>
-                  </div>
-                  <div className={`flex items-center gap-2 text-sm transition-colors duration-200 ${
-                    passwordChecks.hasSpecialChar ? 'text-green-400' : 'text-slate-500'
-                  }`}>
-                    <CheckIcon met={passwordChecks.hasSpecialChar} />
-                    <span>At least one special character (!@#$%...)</span>
-                  </div>
-                  <div className={`flex items-center gap-2 text-sm transition-colors duration-200 ${
-                    passwordChecks.hasUpperCase ? 'text-green-400' : 'text-slate-500'
-                  }`}>
-                    <CheckIcon met={passwordChecks.hasUpperCase} />
-                    <span>At least one uppercase letter (A-Z)</span>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Submit Button */}
               <button
                 onClick={handleSubmit(onSubmit)}
-                className="btn w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 transform hover:-translate-y-0.5 rounded-lg"
+                className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading}
               >
-                {loading ? (
-                  <>
-                    <span className="loading loading-spinner"></span>
-                    Creating Account...
-                  </>
-                ) : (
-                  <>
-                    <span>Create Account</span>
-                    <svg className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </>
-                )}
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
             </div>
 
-            {/* Divider */}
-            <div className="divider my-8 text-slate-600">OR</div>
-
             {/* Login Link */}
-            <div className="text-center">
-              <p className="text-slate-400">
-                Already have an account?{' '}
-                <NavLink to="/login" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors duration-200">
-                  Sign in here
-                </NavLink>
-              </p>
+            <div className="mt-6 text-center text-sm text-slate-400">
+              Already have an account?{' '}
+              <NavLink to="/login" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors">
+                Sign in
+              </NavLink>
             </div>
           </div>
         </div>
 
-        {/* Footer Text */}
-        <p className="text-center text-slate-500 text-sm mt-6">
+        <p className="text-center text-slate-500 text-xs mt-4">
           By signing up, you agree to our Terms & Privacy Policy
         </p>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
