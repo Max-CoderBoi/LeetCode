@@ -156,43 +156,17 @@ function ChatAi({ problem }) {
         setIsLoading(true);
 
         try {
-            // Simulated API call - replace with your actual API
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const mockResponse = `Sure! Let me help you with that.
-
-**Approach:**
-The key insight here is to use a **two-pointer technique** combined with a hash map for optimal performance.
-
-Here's the step-by-step approach:
-1. Initialize two pointers at the start
-2. Use a hash map to track frequencies
-3. Expand the window until condition is met
-
-**Code Example:**
-\`\`\`python
-def solve(arr):
-    left = 0
-    result = []
-    
-    for right in range(len(arr)):
-        # Process current element
-        if arr[right] > 0:
-            result.append(arr[right])
-    
-    return result
-\`\`\`
-
-**Time Complexity:** O(n) where n is the length of the array.
-**Space Complexity:** O(1) as we only use constant extra space.
-
-The inline code looks like this: \`variable = value\` and we use **bold text** for emphasis.
-
-Does this help? Let me know if you need clarification on any step!`;
+            const response = await axiosClient.post("/ai/chat", {
+                messages: [...messages, userMessage],
+                title: problem.title,
+                description: problem.description,
+                testCases: problem.visibleTestCases,
+                startCode: problem.startCode
+            });
 
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: mockResponse,
+                content: response.data.message,
                 isComplete: false
             }]);
         } catch (error) {
