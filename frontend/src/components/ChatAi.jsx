@@ -114,11 +114,18 @@ function MarkdownRenderer({ content }) {
 }
 
 // Typing effect component
-function TypingMessage({ content, onComplete }) {
+function TypingMessage({ content, onComplete, onSkip }) {
     const [displayedContent, setDisplayedContent] = useState('');
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTyping, setIsTyping] = useState(true);
 
     useEffect(() => {
+        if (!isTyping) {
+            setDisplayedContent(content);
+            if (onComplete) onComplete();
+            return;
+        }
+
         if (currentIndex < content.length) {
             const timeout = setTimeout(() => {
                 setDisplayedContent(prev => prev + content[currentIndex]);
@@ -129,9 +136,28 @@ function TypingMessage({ content, onComplete }) {
         } else if (onComplete) {
             onComplete();
         }
-    }, [currentIndex, content, onComplete]);
+    }, [currentIndex, content, onComplete, isTyping]);
 
-    return <MarkdownRenderer content={displayedContent} />;
+    const handleSkip = () => {
+        setIsTyping(false);
+        if (onSkip) onSkip();
+    };
+
+    return (
+        <div className="relative">
+            <MarkdownRenderer content={displayedContent} />
+            {isTyping && currentIndex < content.length && (
+                <button
+                    onClick={handleSkip}
+                    className="absolute -bottom-8 left-0 flex items-center gap-1 px-2 py-1 text-xs bg-slate-700/80 hover:bg-slate-600 text-slate-300 rounded-md border border-slate-600/50 transition-all duration-200 animate-fadeIn"
+                >
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-sm"></span>
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-sm"></span>
+                    Skip typing
+                </button>
+            )}
+        </div>
+    );
 }
 
 function ChatAi({ problem }) {
@@ -156,17 +182,43 @@ function ChatAi({ problem }) {
         setIsLoading(true);
 
         try {
-            const response = await axiosClient.post("/ai/chat", {
-                messages: [...messages, userMessage],
-                title: problem.title,
-                description: problem.description,
-                testCases: problem.visibleTestCases,
-                startCode: problem.startCode
-            });
+            // Simulated API call - replace with your actual API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const mockResponse = `Sure! Let me help you with that.
+
+**Approach:**
+The key insight here is to use a **two-pointer technique** combined with a hash map for optimal performance.
+
+Here's the step-by-step approach:
+1. Initialize two pointers at the start
+2. Use a hash map to track frequencies
+3. Expand the window until condition is met
+
+**Code Example:**
+\`\`\`python
+def solve(arr):
+    left = 0
+    result = []
+    
+    for right in range(len(arr)):
+        # Process current element
+        if arr[right] > 0:
+            result.append(arr[right])
+    
+    return result
+\`\`\`
+
+**Time Complexity:** O(n) where n is the length of the array.
+**Space Complexity:** O(1) as we only use constant extra space.
+
+The inline code looks like this: \`variable = value\` and we use **bold text** for emphasis.
+
+Does this help? Let me know if you need clarification on any step!`;
 
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: response.data.message,
+                content: mockResponse,
                 isComplete: false
             }]);
         } catch (error) {
@@ -233,7 +285,7 @@ function ChatAi({ problem }) {
                             <div className={`relative group ${msg.role === "user"
                                     ? "bg-gradient-to-br from-blue-600 to-cyan-600"
                                     : "bg-slate-800/50 backdrop-blur-sm border border-slate-700/50"
-                                } rounded-2xl px-4 py-3 shadow-lg`}>
+                                } rounded-2xl px-4 py-3 shadow-lg ${!msg.isComplete && msg.role === 'assistant' ? 'mb-10' : ''}`}>
                                 {/* Message Content */}
                                 <div className={`text-sm leading-relaxed ${msg.role === "user" ? "text-white whitespace-pre-wrap" : "text-slate-200"
                                     }`}>
@@ -245,6 +297,7 @@ function ChatAi({ problem }) {
                                         <TypingMessage
                                             content={msg.content}
                                             onComplete={() => handleTypingComplete(index)}
+                                            onSkip={() => handleTypingComplete(index)}
                                         />
                                     )}
                                 </div>
